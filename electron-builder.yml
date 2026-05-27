@@ -1,0 +1,108 @@
+appId: com.urent.fleetos
+productName: Fleet OS
+copyright: Copyright (c) 2026 uRent UG (haftungsbeschraenkt). Alle Rechte vorbehalten.
+
+afterSign: scripts/notarize.js
+
+directories:
+  output: dist-app
+  buildResources: build
+
+files:
+  - "dist/**/*"
+  - "node_modules/**/*"
+  - "package.json"
+  - "!node_modules/**/*.{md,markdown,txt}"
+  - "!node_modules/**/test/**/*"
+  - "!node_modules/**/tests/**/*"
+  - "!node_modules/**/*.d.ts"
+  - "!node_modules/**/*.map"
+  - "!**/node_modules/*/{CHANGELOG.md,README.md,readme.md}"
+
+extraResources:
+  - from: "assets"
+    to: "assets"
+    filter: ["**/*"]
+
+mac:
+  category: public.app-category.business
+  icon: assets/icons/icon.icns
+  hardenedRuntime: true
+  gatekeeperAssess: false
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.inherit.plist
+  # identity wird via CSC_LINK / CSC_KEY_PASSWORD env vars zur Build-Zeit gesetzt.
+  # Local-Build ohne Cert laeuft mit identity: null (durch electron-builder
+  # default), produziert ein nicht-signiertes .app das nur lokal startet.
+  notarize: false
+  target:
+    - target: dmg
+      arch:
+        - x64
+        - arm64
+  artifactName: "${productName}-${version}-${arch}.${ext}"
+
+dmg:
+  iconSize: 96
+  iconTextSize: 12
+  window:
+    width: 540
+    height: 380
+  contents:
+    - x: 140
+      y: 200
+      type: file
+    - x: 400
+      y: 200
+      type: link
+      path: /Applications
+
+win:
+  icon: assets/icons/icon.ico
+  publisherName: "uRent UG (haftungsbeschraenkt)"
+  # certificateFile + certificatePassword werden via CSC_LINK / CSC_KEY_PASSWORD
+  # env vars zur Build-Zeit eingespeist (siehe .github/workflows/build.yml).
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: "${productName}-${version}-Setup.${ext}"
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  allowElevation: true
+  installerIcon: assets/icons/icon.ico
+  uninstallerIcon: assets/icons/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: "Fleet OS"
+  artifactName: "${productName}-${version}-Setup.${ext}"
+
+linux:
+  icon: assets/icons/icon.png
+  category: Office
+  synopsis: "Das Betriebssystem fuer Fahrzeugvermietung"
+  description: "Fleet OS ist die zentrale Plattform fuer moderne Fahrzeugvermietung."
+  target:
+    - target: AppImage
+      arch: x64
+    - target: deb
+      arch: x64
+  artifactName: "${productName}-${version}.${ext}"
+
+appImage:
+  artifactName: "${productName}-${version}.${ext}"
+
+publish:
+  provider: github
+  owner: PascalZagarolo
+  repo: fleet-os-desktop
+  releaseType: release
+  vPrefixedTagName: true
+
+protocols:
+  - name: Fleet OS Protocol
+    schemes:
+      - fleetos

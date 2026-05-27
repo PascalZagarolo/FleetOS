@@ -1,0 +1,49 @@
+{
+  "name": "fleet-os-desktop",
+  "version": "0.1.0",
+  "description": "Fleet OS Desktop App",
+  "main": "dist/main/index.js",
+  "author": {
+    "name": "uRent UG (haftungsbeschraenkt)",
+    "email": "team@urent-rental.de"
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:main\" \"npm run dev:preload\" \"wait-on dist/main/index.js dist/preload/index.js && electron .\"",
+    "dev:main": "tsc --project tsconfig.main.json --watch",
+    "dev:preload": "esbuild src/preload/index.ts --bundle --platform=node --target=node18 --external:electron --outfile=dist/preload/index.js --watch",
+    "build": "npm run build:main && npm run build:preload",
+    "build:main": "tsc --project tsconfig.main.json",
+    "build:preload": "esbuild src/preload/index.ts --bundle --platform=node --target=node18 --external:electron --outfile=dist/preload/index.js",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit -p tsconfig.main.json && tsc --noEmit -p tsconfig.preload.json",
+    "icons": "node scripts/build-icons.mjs"
+  },
+  "dependencies": {
+    "electron-log": "^5.1.2",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.1.8",
+    "semver": "^7.6.0"
+  },
+  "devDependencies": {
+    "@electron/notarize": "^2.3.0",
+    "@types/node": "^20.11.0",
+    "@types/semver": "^7.5.6",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "concurrently": "^8.2.2",
+    "dotenv": "^16.4.0",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.13.0",
+    "esbuild": "^0.28.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.3.0",
+    "wait-on": "^7.2.0"
+  }
+}

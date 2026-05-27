@@ -1,0 +1,15 @@
+node_modules/
+dist/
+dist-app/
+out/
+release/
+*.log
+.DS_Store
+.env
+.env.local
+.env.production
+coverage/
+.vscode/
+.idea/
+*.tsbuildinfo
+.eslintcache
