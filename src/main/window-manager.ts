@@ -38,11 +38,14 @@ export async function createMainWindow(): Promise<BrowserWindow> {
     trafficLightPosition: isMac ? { x: 16, y: 16 } : undefined,
     titleBarOverlay: isWindows
       ? {
-          // Workstation design system: cream-50 surface + ink-900 symbols.
-          // Custom AppTitleBar (webapp) paints the same cream across the rest
-          // of the 40px strip, so Min/Max/Close blend with our chrome.
-          color: '#FAF8F3',
-          symbolColor: '#0A0A0A',
+          // Must match the AppTitleBar background painted by the webapp at
+          // components/electron/app-title-bar.tsx — both are #0F0F0F so the
+          // Windows-drawn min/max/close buttons sit on the same surface as
+          // the custom chrome. The wider Fleet OS shell is dark-themed
+          // (zinc-900 sidebar, ink-900 body), a cream strip up top would
+          // visually fracture the workspace.
+          color: '#0F0F0F',
+          symbolColor: '#F1EFE8',
           height: 40,
         }
       : undefined,

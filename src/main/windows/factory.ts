@@ -43,8 +43,9 @@ export async function createSecondaryWindow(config: WindowConfig): Promise<Brows
     trafficLightPosition: isMac ? { x: 16, y: 16 } : undefined,
     titleBarOverlay: isWindows
       ? {
-          color: '#FAF8F3',
-          symbolColor: '#0A0A0A',
+          // Match the dark AppTitleBar — see window-manager.ts for the why.
+          color: '#0F0F0F',
+          symbolColor: '#F1EFE8',
           height: 40,
         }
       : undefined,
