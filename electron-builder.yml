@@ -98,7 +98,7 @@ appImage:
 publish:
   provider: github
   owner: PascalZagarolo
-  repo: fleet-os-desktop
+  repo: FleetOS
   releaseType: release
   vPrefixedTagName: true
 
