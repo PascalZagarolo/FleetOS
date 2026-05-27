@@ -69,15 +69,19 @@ win:
   artifactName: "${productName}-${version}-Setup.${ext}"
 
 nsis:
-  oneClick: false
-  perMachine: false
-  allowToChangeInstallationDirectory: true
-  allowElevation: true
+  # oneClick: User doppelklickt Setup.exe → silent install → App startet
+  # automatisch. Kein Wizard, kein Pfad-Picker, kein Bestätigungs-Dialog.
+  # Vorgänger-Version wird beim Upgrade still ersetzt. Für Pilot-User mit
+  # null Toleranz für Install-Friction.
+  oneClick: true
+  perMachine: false        # Per-User-Install → kein UAC-Prompt
   installerIcon: assets/icons/icon.ico
   uninstallerIcon: assets/icons/icon.ico
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: "Fleet OS"
+  runAfterFinish: true     # Launch app right after install
+  deleteAppDataOnUninstall: false  # Sessions bleiben über Reinstalls bestehen
   artifactName: "${productName}-${version}-Setup.${ext}"
 
 linux:
