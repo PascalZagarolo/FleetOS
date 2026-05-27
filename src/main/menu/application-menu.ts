@@ -5,6 +5,15 @@ import { APP_CONFIG } from '../../shared/constants';
 import { IPC_CHANNELS } from '../../shared/ipc-channels';
 
 export function setupApplicationMenu(): void {
+  // On Windows/Linux the application menu renders as an inline bar under the
+  // title bar — that fights the custom workstation title-bar and bloats the
+  // chrome. macOS renders it in the system menu bar (top of screen, separate
+  // from the window) so it stays there.
+  if (!isMac) {
+    Menu.setApplicationMenu(null);
+    return;
+  }
+
   const template: MenuItemConstructorOptions[] = [
     ...(isMac
       ? ([

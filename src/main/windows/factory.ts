@@ -43,8 +43,8 @@ export async function createSecondaryWindow(config: WindowConfig): Promise<Brows
     trafficLightPosition: isMac ? { x: 16, y: 16 } : undefined,
     titleBarOverlay: isWindows
       ? {
-          color: '#0F0F0F',
-          symbolColor: '#F1EFE8',
+          color: '#FAF8F3',
+          symbolColor: '#0A0A0A',
           height: 40,
         }
       : undefined,
@@ -70,6 +70,11 @@ export async function createSecondaryWindow(config: WindowConfig): Promise<Brows
 
   if (savedState?.isMaximized) window.maximize();
   if (savedState?.isFullScreen) window.setFullScreen(true);
+
+  if (!isMac) {
+    window.setMenuBarVisibility(false);
+    window.setAutoHideMenuBar(true);
+  }
 
   const url = buildUrl(config);
   logger.info(`Loading URL for window ${config.id}: ${url}`);

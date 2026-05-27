@@ -31,12 +31,18 @@ export async function createMainWindow(): Promise<BrowserWindow> {
 
     show: false,
 
+    // Frameless: required on Windows for the native title bar to fully
+    // disappear. titleBarStyle: 'hidden' alone leaves a thin strip.
+    frame: false,
     titleBarStyle: isMac ? 'hiddenInset' : 'hidden',
     trafficLightPosition: isMac ? { x: 16, y: 16 } : undefined,
     titleBarOverlay: isWindows
       ? {
-          color: '#0F0F0F',
-          symbolColor: '#F1EFE8',
+          // Workstation design system: cream-50 surface + ink-900 symbols.
+          // Custom AppTitleBar (webapp) paints the same cream across the rest
+          // of the 40px strip, so Min/Max/Close blend with our chrome.
+          color: '#FAF8F3',
+          symbolColor: '#0A0A0A',
           height: 40,
         }
       : undefined,
@@ -56,6 +62,13 @@ export async function createMainWindow(): Promise<BrowserWindow> {
 
   if (wasMaximized) {
     mainWindow.maximize();
+  }
+
+  // Windows would otherwise pop up the menu bar on Alt-press even after
+  // setApplicationMenu(null). These two calls suppress that completely.
+  if (!isMac) {
+    mainWindow.setMenuBarVisibility(false);
+    mainWindow.setAutoHideMenuBar(true);
   }
 
   const url = getAppUrl();
