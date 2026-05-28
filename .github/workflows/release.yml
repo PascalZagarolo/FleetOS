@@ -63,8 +63,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Mark release as published
+      - name: Set release notes from changelog + publish
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release edit "${GITHUB_REF_NAME}" --draft=false --repo="${GITHUB_REPOSITORY}"
+          VERSION="${GITHUB_REF_NAME#v}"
+          NOTES_URL="https://www.urent-rental.de/api/fleet-os/changelog/${VERSION}"
+          # The webapp is the single source of truth for changelog copy. Pull
+          # the markdown for this version and use it as the release body — that
+          # body is what electron-updater surfaces as releaseNotes in-app.
+          if curl -fsSL "$NOTES_URL" -o release-notes.md; then
+            gh release edit "${GITHUB_REF_NAME}" --notes-file release-notes.md --draft=false --repo="${GITHUB_REPOSITORY}"
+          else
+            echo "No changelog entry for ${VERSION}; publishing without notes."
+            gh release edit "${GITHUB_REF_NAME}" --draft=false --repo="${GITHUB_REPOSITORY}"
+          fi
