@@ -55,6 +55,15 @@ export type TrayData = {
   notificationsUnread: number;
 };
 
+export type BadgePayload = {
+  /** Total actionable count. 0 clears the badge. */
+  count: number;
+  /** PNG data URL of a pre-rendered numeric badge — used as the Windows
+   *  taskbar overlay (Windows has no native numeric badge). Ignored on
+   *  macOS/Linux, which use `count` directly. null clears the overlay. */
+  overlayDataUrl: string | null;
+};
+
 export type ShortcutDefinition = {
   id: string;
   accelerator: string;

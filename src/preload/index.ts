@@ -9,6 +9,7 @@ import {
   IPC_CHANNELS_AUTO_START,
   IPC_CHANNELS_NOTIFICATIONS,
   IPC_CHANNELS_DEEP_LINKS,
+  IPC_CHANNELS_BADGE,
 } from '../shared/ipc-channels-tray';
 import {
   IPC_CHANNELS_WINDOWS,
@@ -29,6 +30,7 @@ import type {
   ProgressInfo,
   UpdateState,
   TrayData,
+  BadgePayload,
   ShortcutDefinition,
   RichNotificationOptions,
   NotificationPermissionState,
@@ -108,6 +110,11 @@ const electronAPI = {
     updateData: (data: Partial<TrayData>): Promise<void> =>
       ipcRenderer.invoke(IPC_CHANNELS_TRAY.UPDATE_TRAY_DATA, data),
     getData: (): Promise<TrayData> => ipcRenderer.invoke(IPC_CHANNELS_TRAY.GET_TRAY_DATA),
+  },
+
+  badge: {
+    set: (payload: BadgePayload): Promise<void> =>
+      ipcRenderer.invoke(IPC_CHANNELS_BADGE.SET, payload),
   },
 
   navigation: {

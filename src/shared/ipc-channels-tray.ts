@@ -42,3 +42,10 @@ export const IPC_CHANNELS_DEEP_LINKS = {
   // Main -> Renderer
   RECEIVED: 'deep-link:received',
 } as const;
+
+export const IPC_CHANNELS_BADGE = {
+  // Renderer -> Main: taskbar/dock badge count.
+  // macOS/Linux use the numeric `count`; Windows renders `overlayDataUrl`
+  // (a PNG data URL produced by the renderer canvas) as a taskbar overlay.
+  SET: 'badge:set',
+} as const;

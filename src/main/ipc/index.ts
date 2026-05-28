@@ -11,6 +11,7 @@ import { setupWindowsHandlers } from './windows';
 import { setupBroadcastHandlers } from './broadcast';
 import { setupDocumentHandlers } from './documents';
 import { setupConnectivityHandlers } from './connectivity';
+import { setupBadgeHandlers } from './badge';
 
 export function setupAllIpcHandlers(): void {
   setupAppInfoHandlers();
@@ -26,4 +27,5 @@ export function setupAllIpcHandlers(): void {
   setupBroadcastHandlers();
   setupDocumentHandlers();
   setupConnectivityHandlers();
+  setupBadgeHandlers();
 }
