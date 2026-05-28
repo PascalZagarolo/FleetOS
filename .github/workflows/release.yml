@@ -5,6 +5,12 @@ on:
     tags:
       - 'v*'
 
+# electron-builder + the finalize step CREATE and EDIT GitHub releases, which
+# needs contents:write on the GITHUB_TOKEN. Without this the token is read-only
+# and electron-builder 403s ("Resource not accessible by integration").
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ${{ matrix.os }}

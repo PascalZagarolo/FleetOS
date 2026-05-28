@@ -171,6 +171,8 @@ export async function revealDocumentInFinder(
 function resolveParentWindow(parentWindowId?: string): BrowserWindow | null {
   if (parentWindowId) {
     try {
+      // Lazy require breaks a circular import with windows/registry.
+      // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports
       const registry = require('../windows/registry') as typeof import('../windows/registry');
       return registry.windowRegistry.get(parentWindowId);
     } catch {
