@@ -26,6 +26,7 @@ import {
   stopConnectivityWatcher,
 } from './sync/connectivity';
 import { markQuitting } from './lifecycle';
+import { createSplashWindow } from './splash';
 
 logger.info(`Starting ${APP_CONFIG.name}`);
 logger.info(`Version: ${app.getVersion()}`);
@@ -60,6 +61,11 @@ if (!gotTheLock) {
 
   app.whenReady().then(async () => {
     logger.info('App ready, setting up');
+
+    // Show the branded splash immediately — before IPC setup, menu, and the
+    // main window's remote webview load. closeSplash() fires from the main
+    // window's ready-to-show handler (window-manager.ts).
+    createSplashWindow();
 
     // Google's OAuth policy rejects embedded-webview clients, and detects
     // "Electron/x.y.z" in the User-Agent. Strip the Electron token (and the

@@ -10,6 +10,7 @@ import { wasAppOpenedByAutoStart } from './auto-start';
 import { windowRegistry } from './windows/registry';
 import type { WindowConfig } from '../shared/window-types';
 import { isQuitting } from './lifecycle';
+import { closeSplash } from './splash';
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -77,16 +78,27 @@ export async function createMainWindow(): Promise<BrowserWindow> {
   const url = getAppUrl();
   logger.info(`Loading URL: ${url}`);
 
+  // Safety net: if the remote load hangs (no ready-to-show), never leave the
+  // splash stuck on screen. ready-to-show's closeSplash() is idempotent.
+  const splashFailsafe = setTimeout(() => closeSplash(), 12_000);
+
   try {
     await mainWindow.loadURL(url);
   } catch (error) {
     logger.error('Failed to load URL', error);
+    closeSplash();
     await showLoadError(mainWindow, url);
+  } finally {
+    clearTimeout(splashFailsafe);
   }
 
   const startedHidden = wasAppOpenedByAutoStart();
 
   mainWindow.once('ready-to-show', () => {
+    // Main window content is painted — tear down the splash. (If the app
+    // started hidden via auto-start there's no visible window to swap to,
+    // but the splash should still go away.)
+    closeSplash();
     if (!startedHidden) {
       mainWindow?.show();
       mainWindow?.focus();
