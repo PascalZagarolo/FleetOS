@@ -47,6 +47,24 @@ export function setupAutoUpdater(): void {
   autoUpdater.autoInstallOnAppQuit = true;
   autoUpdater.channel = 'latest';
 
+  // Unsigned pilot builds: electron-updater's NsisUpdater verifies the
+  // downloaded installer is Authenticode-signed by `publisherName` and
+  // otherwise REJECTS it ("New version X is not signed by the application
+  // owner"). With no code-signing cert yet, that breaks every auto-update.
+  // Accept the update regardless — integrity is still guaranteed by the
+  // sha512 in latest.yml + HTTPS delivery from GitHub Releases.
+  // REMOVE this override once builds are code-signed.
+  if (process.platform === 'win32') {
+    (
+      autoUpdater as unknown as {
+        verifyUpdateCodeSignature?: (
+          publisherName: string[],
+          path: string,
+        ) => Promise<string | null>;
+      }
+    ).verifyUpdateCodeSignature = () => Promise.resolve(null);
+  }
+
   setupUpdaterEvents();
 
   setTimeout(() => {
